@@ -62,6 +62,7 @@ Add to your `config/config.js`:
 | `initialLoadDelay` | `0` | Seconds to wait before first fetch |
 | `animationSpeed` | `0` | DOM update animation speed in ms |
 | `fontSize` | `"small"` | Font size: `x-small`, `small`, `medium`, `large`, `x-large` |
+| `showExtra` | `false` | Show the extra credits row (for accounts with usage-based billing enabled) |
 | `barColor` | `"#4a90e2"` | Progress bar fill color |
 | `trackColor` | `"#1a2a3a"` | Progress bar track (background) color |
 | `warnColor` | `"#e2a94a"` | Bar color when usage ≥ 80% |

@@ -13,6 +13,7 @@ Module.register("MMM-AnthropicUsage", {
 		trackColor: "#1a2a3a",    // progress bar track color
 		warnColor: "#e2a94a",     // bar color at >= 80%
 		overColor: "#cc3318",     // bar color at 100%
+		showExtra: false,         // show extra credits row (Pro accounts with usage-based billing)
 	},
 
 	requiresVersion: "2.2.1",
@@ -150,7 +151,7 @@ Module.register("MMM-AnthropicUsage", {
 				.forEach(function (r) { table.appendChild(r); });
 		}
 
-		if (d.extra_usage && d.extra_usage.is_enabled) {
+		if (self.config.showExtra && d.extra_usage && d.extra_usage.is_enabled) {
 			var eu = d.extra_usage;
 			var ep = Math.round(eu.used_credits / eu.monthly_limit * 100);
 			var spent = "$" + (eu.used_credits / 100).toFixed(2);
