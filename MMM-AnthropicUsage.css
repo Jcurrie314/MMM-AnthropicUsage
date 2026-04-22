@@ -1,0 +1,65 @@
+/**
+ * MMM-AnthropicUsage
+ */
+
+.MMM-AnthropicUsage .x-small { font-size: 15px; line-height: 20px; }
+.MMM-AnthropicUsage .small   { font-size: 20px; line-height: 25px; }
+.MMM-AnthropicUsage .medium  { font-size: 30px; line-height: 35px; }
+.MMM-AnthropicUsage .large   { font-size: 65px; line-height: 65px; }
+.MMM-AnthropicUsage .x-large { font-size: 75px; line-height: 75px; letter-spacing: -3px; }
+
+.MMM-AnthropicUsage table,
+.MMM-AnthropicUsage tr,
+.MMM-AnthropicUsage td {
+	height: auto;
+	font-family: inherit;
+}
+
+.MMM-AnthropicUsage table td {
+	padding: 0;
+	margin: 0;
+}
+
+.MMM-AnthropicUsage .secondary-text {
+	font-size: 75%;
+}
+
+.MMM-AnthropicUsage .loading {
+	color: #666666;
+}
+
+.MMM-AnthropicUsage .usage-table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 0;
+}
+
+.MMM-AnthropicUsage .label-cell {
+	white-space: nowrap;
+	width: 1px;
+	color: #aaaaaa;
+}
+
+.MMM-AnthropicUsage .right-cell {
+	text-align: right;
+	color: #aaaaaa;
+}
+
+.MMM-AnthropicUsage .progressBarCell {
+	padding-top: 3px;
+	padding-bottom: 10px;
+}
+
+/* Track and bar colors are set inline from config — these are fallback defaults */
+.MMM-AnthropicUsage .progressBarTrack {
+	border-radius: 6px;
+	height: 6px;
+	background-color: #1a2a3a;
+}
+
+.MMM-AnthropicUsage .progressBar {
+	height: 6px;
+	border-radius: 3px;
+	min-width: 3px;
+	background-color: #4a90e2;
+}

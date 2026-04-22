@@ -1,0 +1,8 @@
+{
+  "name": "mmm-anthropicusage",
+  "version": "1.0.0",
+  "description": "MagicMirror² module — displays Claude.ai Pro plan usage (session, weekly, extra credits)",
+  "main": "MMM-AnthropicUsage.js",
+  "license": "MIT",
+  "dependencies": {}
+}
