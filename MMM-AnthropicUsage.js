@@ -14,6 +14,7 @@ Module.register("MMM-AnthropicUsage", {
 		warnColor: "#e2a94a",     // bar color at >= 80%
 		overColor: "#cc3318",     // bar color at 100%
 		showExtra: false,         // show extra credits row (Pro accounts with usage-based billing)
+		cdpPort: null,            // set to 9222 to route fetches through Chromium via CDP (fixes Cloudflare blocks)
 	},
 
 	requiresVersion: "2.2.1",
@@ -39,6 +40,7 @@ Module.register("MMM-AnthropicUsage", {
 		this.sendSocketNotification("GET_ANTHROPIC_USAGE", {
 			sessionKey: this.config.sessionKey,
 			orgId: this.config.orgId,
+			cdpPort: this.config.cdpPort || null,
 		});
 	},
 

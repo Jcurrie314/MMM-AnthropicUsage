@@ -9,14 +9,14 @@ A [MagicMirror²](https://github.com/MichMich/MagicMirror) module that displays 
 - **Session usage** — current 5-hour rolling window utilization and time until reset
 - **Weekly usage** — 7-day rolling window utilization and time until reset
 - **Extra credits** — spend vs. monthly limit (shown only when enabled on your account)
-- **Auto-refreshing session key** — captures the refreshed `sessionKey` from each API response so you only need to paste it once
+- **Two fetch modes** — direct HTTPS (simple) or Chrome DevTools Protocol (bypasses Cloudflare)
 - **Configurable colors** — bar, track, warn, and over-limit colors all customizable
 
 ## Installation
 
 ```bash
 cd ~/MagicMirror/modules
-git clone https://github.com/YOUR_USERNAME/MMM-AnthropicUsage
+git clone https://github.com/Jcurrie314/MMM-AnthropicUsage
 ```
 
 No npm dependencies — uses only Node.js built-ins.
@@ -33,8 +33,6 @@ You need two values from your browser while logged into claude.ai:
 3. Navigate to **Settings → Usage** (or any page that loads)
 4. Find a request to `claude.ai/api/organizations/...` and copy the org ID from the URL
 5. In the request headers, find the `Cookie` header and copy the value of `sessionKey=...`
-
-> The module automatically refreshes the session key on every API call, so you should only need to do this once.
 
 ## Configuration
 
@@ -67,10 +65,72 @@ Add to your `config/config.js`:
 | `trackColor` | `"#1a2a3a"` | Progress bar track (background) color |
 | `warnColor` | `"#e2a94a"` | Bar color when usage ≥ 80% |
 | `overColor` | `"#cc3318"` | Bar color when usage = 100% |
+| `cdpPort` | `null` | CDP port for Cloudflare bypass — see below |
+
+## Cloudflare bypass (CDP mode)
+
+Cloudflare blocks plain Node.js HTTPS requests to `claude.ai` on some systems (common on Raspberry Pi) due to TLS fingerprinting. If you see errors like `Blocked by Cloudflare or session expired (HTTP 403)`, enable CDP mode.
+
+CDP mode routes the API fetch through your **already-running Chromium browser** via [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/). The real browser's TLS fingerprint passes Cloudflare where a Node.js request would be blocked. A hidden background tab is opened for the fetch and closed immediately — the MagicMirror display tab is not affected.
+
+### Requirements for CDP mode
+
+- **Node.js 22+** (built-in global `WebSocket`, stable since v22.4.0)
+- **Chromium launched with** `--remote-debugging-port=9222`
+
+### Setup
+
+**1. Add the debugging port to your Chromium launch command:**
+
+```bash
+chromium-browser \
+  --kiosk \
+  --remote-debugging-port=9222 \
+  http://localhost:8080
+```
+
+If you use a startup script (e.g. in `~/.config/lxsession/LXDE-pi/autostart`), add the flag there.
+
+**2. Enable CDP mode in your config:**
+
+```javascript
+{
+    module: "MMM-AnthropicUsage",
+    position: "bottom_left",
+    header: "Claude",
+    config: {
+        sessionKey: "YOUR_SESSION_KEY",
+        orgId: "YOUR_ORG_ID",
+        cdpPort: 9222,
+    }
+}
+```
+
+That's it. The module will now route all fetches through Chromium.
+
+### Electron users
+
+If you run MagicMirror with Electron (the default), you can expose a CDP port by adding `--remote-debugging-port=9222` to `electronOptions` in your `config.js`:
+
+```javascript
+var config = {
+    electronOptions: {
+        webPreferences: {
+            additionalArguments: ["--remote-debugging-port=9222"],
+        },
+    },
+    // ... rest of config
+};
+```
+
+Then set `cdpPort: 9222` in the module config.
 
 ## How it works
 
-The module calls the internal claude.ai usage API (`/api/organizations/{orgId}/usage`) using your session cookie for authentication. Every response includes a refreshed `sessionKey` in the `Set-Cookie` header, which the module saves to `.session.json` so the key stays current automatically.
+The module calls the internal claude.ai usage API (`/api/organizations/{orgId}/usage`) using your session cookie for authentication.
+
+- **Direct mode** (default): Node.js makes a standard HTTPS request with the session cookie in the `Cookie` header. Simple, but may be blocked by Cloudflare on some systems.
+- **CDP mode** (`cdpPort` set): The module connects to the running Chromium/Electron instance via WebSocket, creates a hidden background tab, sets the session cookie, navigates to the API URL, and reads the raw HTTP response body. No screen flicker — the MagicMirror tab stays focused.
 
 ## License
 
